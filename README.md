@@ -28,7 +28,7 @@ S3 bucket should be renamed in project.
 
 Side note: if I had more time I would have added local dynamodb and s3 mock to this project.
 
-Compile/build/run
+**Build**
 
  1. `dep ensure`
  2. `go run main.go`
@@ -66,7 +66,6 @@ I did not add any unit tests, normally I would but because of my lack of knowled
 - Authentication is Basic auth 
     - Example: `Authorization: Basic YmFzaWNBdXRoOmJhc2VQYXNzd29yZA==`
     - Password does not matter
-    - Username is attached to file
     
 
 | **URL** | **Method** | **Auth required** | **SampleResponse** |
