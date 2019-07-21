@@ -70,11 +70,11 @@ I did not add any unit tests, normally I would but because of my lack of knowled
     - Password does not matter
     
 
-| **URL** | **Method** | **Auth required** | **SampleResponse** |
-| --- | --- | --- | --- |
-| `/file` | `GET` | YES | [sample](#get-all-files-success-response) |
-| `/file` | `POST` | YES | [sample](#upload-file) |
-| `/file{FileId}` | `GET` | YES | Downloads a file |
+| **URL** | **Method** | **Auth required** | **SampleResponse** | **Info** |
+| --- | --- | --- | --- | --- |
+| `/file` | `GET` | YES | [sample](#get-all-files-success-response) | lists all user's files |
+| `/file` | `POST` | YES | [sample](#upload-file) |  *FileFormKey*: `file` ---5mb limit |
+| `/file/{FileId}` | `GET` | YES | Downloads a file | downloads one file |
 
 ### Get All Files Success Response
 
@@ -95,6 +95,7 @@ For a Username basicAuth
 ### Upload File Success Response
 
 **FileFormKey**: `file`
+
 ```json
 {
     "FileId": "QYb1v5iYKF8IRULkTVWvLa",
