@@ -19,7 +19,7 @@ uploaded the file can access it.`
 # how to compile/build/run the code locally
 **Prerequisits**
 
-Set up Aws CLI with valid credentials for s3 bucket and DynamoDB.
+Set up Aws CLI with valid credentials for (read/write) for s3 bucket and (read/write/create) for DynamoDB.
 
 Dynamodb Table will be created automatically if it does not exist.
 
