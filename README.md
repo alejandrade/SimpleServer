@@ -52,7 +52,9 @@ I added an authentication interceptor in the router in order to achieve basic au
 
 I decided to leverage AWS entirely, I am very comfortable with the cloud and it really let me concentrate on learning GO.
 
-I added an abritary 5MB limit to the file upload so you don't take down my server.
+I added an arbitrary 5MB limit to the file upload so you don't take down my server.
+
+I did not add any unit tests, normally I would but because of my lack of knowledge of GO I spent most of my time stumbling around learning it.
 
 ## Aws Resources
 - DB: Dynamodb, an easy to use scalable data store for quick projects
