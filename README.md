@@ -93,6 +93,8 @@ For a Username basicAuth
 ```
 
 ### Upload File Success Response
+
+**FileFormKey**: `file`
 ```json
 {
     "FileId": "QYb1v5iYKF8IRULkTVWvLa",
