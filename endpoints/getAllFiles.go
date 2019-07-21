@@ -15,6 +15,12 @@ func (app *AppContext) GetAllFiles(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
+	if len(fileRecords) == 0 {
+		http.Error(w, "not found", 404)
+		return
+	}
+
 	w.Header().Set("content-type", "application/json")
 	err = json.NewEncoder(w).Encode(fileRecords)
 	if err != nil {

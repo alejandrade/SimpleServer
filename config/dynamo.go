@@ -14,7 +14,9 @@ func CreateFileUploadIfNotExist() *dynamodb.DynamoDB {
 	}))
 
 	// Create DynamoDB client
-	svc := dynamodb.New(sess)
+	svc := dynamodb.New(sess, &aws.Config{
+		Region: aws.String("us-east-2")},
+	)
 
 	// Create table Movies
 	tableName := "UserFileUpload"
