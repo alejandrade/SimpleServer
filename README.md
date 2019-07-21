@@ -74,7 +74,7 @@ I did not add any unit tests, normally I would but because of my lack of knowled
 | --- | --- | --- | --- | --- |
 | `/file` | `GET` | YES | [sample](#get-all-files-success-response) | lists all user's files |
 | `/file` | `POST` | YES | [sample](#upload-file) |  *FileFormKey*: `file` ---5mb limit |
-| `/file/{FileId}` | `GET` | YES | Downloads a file | downloads one file |
+| `/file/{FileId}` | `GET` | YES | Binary Data | downloads one file |
 
 ### Get All Files Success Response
 
