@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"SimpleServer/service"
+	"SimpleServer/util"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -15,13 +16,13 @@ var FILE_SIZE_LIMIT int64 = 5000000
 
 func (app *AppContext) UploadFile(w http.ResponseWriter, r *http.Request) {
 	fileRecord := service.FileRecord{User: GetUserFromRequest(r)}
-	err := handleFile(app.S3Uploader, r, &fileRecord)
+	err := handleFile(app.S3Uploader, r, &fileRecord, app.Properties)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	err = service.SaveFileDb(fileRecord, app.DB)
+	err = service.SaveFileDb(fileRecord, app.DB, app.Properties)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -39,7 +40,7 @@ func (app *AppContext) UploadFile(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func handleFile(s3 *s3manager.Uploader, r *http.Request, fileRecord *service.FileRecord) error {
+func handleFile(s3 *s3manager.Uploader, r *http.Request, fileRecord *service.FileRecord, properties *util.Properties) error {
 	var Buf bytes.Buffer
 	// in your case file would be fileupload
 	file, header, err := r.FormFile("file")
@@ -63,7 +64,7 @@ func handleFile(s3 *s3manager.Uploader, r *http.Request, fileRecord *service.Fil
 		return err
 	}
 
-	err = service.SaveFileS3(&Buf, *header, s3, fileRecord)
+	err = service.SaveFileS3(&Buf, *header, s3, fileRecord, properties)
 
 	if err != nil {
 		return err

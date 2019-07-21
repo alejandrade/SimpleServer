@@ -1,6 +1,7 @@
 package service
 
 import (
+	"SimpleServer/util"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -8,10 +9,7 @@ import (
 	"log"
 )
 
-//This should be coming out of a property file
-var TABLE_NAME = "UserFileUpload"
-
-func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
+func GetAllFilesDb(user string, db *dynamodb.DynamoDB, properties *util.Properties) ([]FileRecord, error) {
 
 	// normally here we would use query and add an index to dynamodb but I opted to use scan since this isn't a production project
 
@@ -28,7 +26,7 @@ func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
 		ExpressionAttributeValues: expr.Values(),
 		FilterExpression:          expr.Filter(),
 		ProjectionExpression:      expr.Projection(),
-		TableName:                 aws.String(TABLE_NAME),
+		TableName:                 aws.String(properties.Database.TableName),
 	}
 
 	result, err := db.Scan(params)
@@ -55,10 +53,10 @@ func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
 	return fileRecords, nil
 }
 
-func GetFileDb(fileId string, user string, db *dynamodb.DynamoDB) (FileRecord, error) {
+func GetFileDb(fileId string, user string, db *dynamodb.DynamoDB, properties *util.Properties) (FileRecord, error) {
 	fileRecord := FileRecord{}
 	result, err := db.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String(TABLE_NAME),
+		TableName: aws.String(properties.Database.TableName),
 		Key: map[string]*dynamodb.AttributeValue{
 			"FileId": {
 				S: aws.String(fileId),
@@ -83,7 +81,7 @@ func GetFileDb(fileId string, user string, db *dynamodb.DynamoDB) (FileRecord, e
 	return fileRecord, nil
 }
 
-func SaveFileDb(file FileRecord, db *dynamodb.DynamoDB) error {
+func SaveFileDb(file FileRecord, db *dynamodb.DynamoDB, properties *util.Properties) error {
 	av, err := dynamodbattribute.MarshalMap(file)
 	if err != nil {
 		log.Println("Got error marshalling new movie item:")
@@ -92,7 +90,7 @@ func SaveFileDb(file FileRecord, db *dynamodb.DynamoDB) error {
 
 	input := &dynamodb.PutItemInput{
 		Item:      av,
-		TableName: aws.String(TABLE_NAME),
+		TableName: aws.String(properties.Database.TableName),
 	}
 
 	_, err = db.PutItem(input)

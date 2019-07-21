@@ -1,0 +1,21 @@
+{
+  "database": {
+    "tableName": "UserFileUpload",
+    "readCapacity": 1,
+    "writeCapacity": 1,
+    "hash": {
+      "key": "FileId",
+      "dataType": "S"
+    },
+    "range": {
+      "key": "User",
+      "dataType": "S"
+    }
+  },
+  "s3Bucket": "gigamog.simple.server.2018",
+  "region": "us-east-2",
+  "useCredentialFile": true,
+  "awsAccessKey": "",
+  "awsSecretKey": "",
+  "port": "8080"
+}

@@ -10,10 +10,10 @@ import (
 	"net/url"
 )
 
-func (app *AppContext) DownloadFile(w http.ResponseWriter, r *http.Request) {
+func (app AppContext) DownloadFile(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	fileId := params["fileId"]
-	fileRecord, err := service.GetFileDb(fileId, GetUserFromRequest(r), app.DB)
+	fileRecord, err := service.GetFileDb(fileId, GetUserFromRequest(r), app.DB, app.Properties)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -25,7 +25,7 @@ func (app *AppContext) DownloadFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/octet-stream")
 	w.Header().Set("content-disposition", "attachment; filename="+url.QueryEscape(fileRecord.FileName))
 
-	fileBytes, err := service.GetFileS3(fileRecord, app.S3Downloader)
+	fileBytes, err := service.GetFileS3(fileRecord, app.S3Downloader, app.Properties)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
