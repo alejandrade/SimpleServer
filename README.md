@@ -48,13 +48,15 @@ Config files are instantiated on start up and we use dependency injection to sup
 Once I realized that Go treats package as the API I separated each endpoint to their own file to keep the code clean. 
 I created services for my AWS calls and seperated out reusable structs.
 
+When I upload to S3 bucket I use a fileId to avoid file name collisions, all original information would be stored in dynamodb.
+
 I added an authentication interceptor in the router in order to achieve basic authentication. Normally I would use JWT but with time constrains I didn't want to spent to much time here.
 
-I decided to leverage AWS entirely, I am very comfortable with the cloud and it really let me concentrate on learning GO.
+I decided to leverage AWS entirely, I am very comfortable with it and it really let me concentrate on learning GO.
 
 I added an arbitrary 5MB limit to the file upload so you don't take down my server.
 
-I did not add any unit tests, normally I would but because of my lack of knowledge of GO I spent most of my time stumbling around learning it.
+I did not add any unit tests, normally I would but because of my lack of knowledge of GO I spent most of my time stumbling around it.
 
 ## Aws Resources
 - DB: Dynamodb, an easy to use scalable data store for quick projects
