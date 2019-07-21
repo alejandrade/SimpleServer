@@ -4,11 +4,14 @@ import (
 	"SimpleServer/service"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"io"
 	"log"
 	"net/http"
 )
+
+var FILE_SIZE_LIMIT int64 = 5000000
 
 func (app *AppContext) UploadFile(w http.ResponseWriter, r *http.Request) {
 	fileRecord := service.FileRecord{User: app.User}
@@ -40,6 +43,14 @@ func handleFile(s3 *s3manager.Uploader, r *http.Request, fileRecord *service.Fil
 	var Buf bytes.Buffer
 	// in your case file would be fileupload
 	file, header, err := r.FormFile("file")
+
+	fileSize := header.Size
+	log.Println("file size:  ", fileSize)
+
+	if fileSize > FILE_SIZE_LIMIT {
+		return errors.New("Maximum file size of 5 megabytes")
+	}
+
 	if err != nil {
 		return err
 	}
