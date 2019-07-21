@@ -3,9 +3,9 @@ package endpoints
 import (
 	"SimpleServer/service"
 	"bytes"
-	"fmt"
 	"github.com/gorilla/mux"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -13,12 +13,29 @@ import (
 func (app *AppContext) DownloadFile(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	fileId := params["fileId"]
-	fileRecord := service.GetFileDb(fileId, app.User, app.DB)
+	fileRecord, err := service.GetFileDb(fileId, app.User, app.DB)
 
-	fmt.Println("downloadFile Endpoint Hit")
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	log.Println("downloadFile Endpoint Hit")
+
 	w.Header().Set("content-type", "application/octet-stream")
 	w.Header().Set("content-disposition", "attachment; filename="+url.QueryEscape(fileRecord.FileName))
 
-	fileBytes := service.GetFileS3(fileRecord, app.S3Downloader)
-	io.Copy(w, bytes.NewReader(fileBytes))
+	fileBytes, err := service.GetFileS3(fileRecord, app.S3Downloader)
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	_, err = io.Copy(w, bytes.NewReader(fileBytes))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
 }

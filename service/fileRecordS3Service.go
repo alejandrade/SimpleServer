@@ -2,17 +2,17 @@ package service
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/matoous/go-nanoid"
+	"log"
 	"mime/multipart"
 )
 
 var BUCKET_NAME = "gigamog.simple.server.2018"
 
-func GetFileS3(record FileRecord, downloader *s3manager.Downloader) []byte {
+func GetFileS3(record FileRecord, downloader *s3manager.Downloader) ([]byte, error) {
 	buff := &aws.WriteAtBuffer{}
 
 	numBytes, err := downloader.Download(buff,
@@ -21,16 +21,17 @@ func GetFileS3(record FileRecord, downloader *s3manager.Downloader) []byte {
 			Key:    aws.String(record.FileId),
 		})
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		return nil, err
 	} else {
-		fmt.Println("downloaded file: ", numBytes)
+		log.Println("downloaded file: ", numBytes)
 	}
 
-	return buff.Bytes()
+	return buff.Bytes(), nil
 
 }
 
-func SaveFileS3(bytes *bytes.Buffer, fileHeader multipart.FileHeader, uploader *s3manager.Uploader, record *FileRecord) {
+func SaveFileS3(bytes *bytes.Buffer, fileHeader multipart.FileHeader, uploader *s3manager.Uploader, record *FileRecord) error {
 	id, _ := gonanoid.Nanoid()
 
 	result, err := uploader.Upload(&s3manager.UploadInput{
@@ -40,7 +41,8 @@ func SaveFileS3(bytes *bytes.Buffer, fileHeader multipart.FileHeader, uploader *
 	})
 
 	if err != nil {
-		fmt.Errorf("failed to upload file, %v", err)
+		log.Println("failed to upload file, %v", err)
+		return err
 	} else {
 
 		record.setFileName(fileHeader.Filename)
@@ -48,5 +50,5 @@ func SaveFileS3(bytes *bytes.Buffer, fileHeader multipart.FileHeader, uploader *
 		record.setFileId(id)
 		record.setFileLocation(result.Location)
 	}
-
+	return nil
 }

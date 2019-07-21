@@ -1,10 +1,10 @@
 package config
 
 import (
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"log"
 )
 
 func CreateFileUploadIfNotExist() *dynamodb.DynamoDB {
@@ -49,10 +49,10 @@ func CreateFileUploadIfNotExist() *dynamodb.DynamoDB {
 
 	_, err := svc.CreateTable(input)
 	if err != nil {
-		fmt.Println("Got error calling CreateTable:")
-		fmt.Println(err.Error())
+		log.Println("Got error calling CreateTable:")
+		log.Println(err.Error())
 	} else {
-		fmt.Println("Created the table", tableName)
+		log.Println("Created the table", tableName)
 	}
 
 	return svc

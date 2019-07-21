@@ -1,24 +1,22 @@
 package service
 
 import (
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
-	"os"
+	"log"
 )
 
 var TABLE_NAME = "UserFileUpload"
 
-func GetAllFilesDb(user string, db *dynamodb.DynamoDB) []FileRecord {
+func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
 	filt := expression.Name("User").Equal(expression.Value(user))
 
 	expr, err := expression.NewBuilder().WithFilter(filt).Build()
 	if err != nil {
-		fmt.Println("Got error building expression:")
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Println("Got error building expression:")
+		return nil, err
 	}
 
 	// Build the query input parameters
@@ -33,9 +31,9 @@ func GetAllFilesDb(user string, db *dynamodb.DynamoDB) []FileRecord {
 	// Make the DynamoDB Query API call
 	result, err := db.Scan(params)
 	if err != nil {
-		fmt.Println("Query API call failed:")
-		fmt.Println((err.Error()))
-		os.Exit(1)
+		log.Println("Query API call failed:")
+		log.Println((err.Error()))
+		return nil, err
 	}
 
 	fileRecordItems := result.Items
@@ -44,14 +42,18 @@ func GetAllFilesDb(user string, db *dynamodb.DynamoDB) []FileRecord {
 	for i, item := range fileRecordItems {
 		fileRecord := FileRecord{}
 		err = dynamodbattribute.UnmarshalMap(item, &fileRecord)
+		if err != nil {
+			return nil, err
+		}
+
 		fileRecords[i] = fileRecord
 
 	}
 
-	return fileRecords
+	return fileRecords, nil
 }
 
-func GetFileDb(fileId string, user string, db *dynamodb.DynamoDB) FileRecord {
+func GetFileDb(fileId string, user string, db *dynamodb.DynamoDB) (FileRecord, error) {
 	fileRecord := FileRecord{}
 	result, err := db.GetItem(&dynamodb.GetItemInput{
 		TableName: aws.String(TABLE_NAME),
@@ -66,21 +68,24 @@ func GetFileDb(fileId string, user string, db *dynamodb.DynamoDB) FileRecord {
 	})
 
 	if err != nil {
-		fmt.Println(err.Error())
-		return fileRecord
+		log.Println(err.Error())
+		return fileRecord, err
 	}
 
 	err = dynamodbattribute.UnmarshalMap(result.Item, &fileRecord)
 
-	return fileRecord
+	if err != nil {
+		return fileRecord, err
+	}
+
+	return fileRecord, nil
 }
 
-func SaveFileDb(file FileRecord, db *dynamodb.DynamoDB) {
+func SaveFileDb(file FileRecord, db *dynamodb.DynamoDB) error {
 	av, err := dynamodbattribute.MarshalMap(file)
 	if err != nil {
-		fmt.Println("Got error marshalling new movie item:")
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Println("Got error marshalling new movie item:")
+		return err
 	}
 
 	input := &dynamodb.PutItemInput{
@@ -90,11 +95,11 @@ func SaveFileDb(file FileRecord, db *dynamodb.DynamoDB) {
 
 	_, err = db.PutItem(input)
 	if err != nil {
-		fmt.Println("Got error calling PutItem:")
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Println("Got error calling PutItem:")
+		return err
 	}
 
-	fmt.Println("Successfully added '" + file.FileName)
+	log.Println("Successfully added '" + file.FileName)
+	return nil
 
 }

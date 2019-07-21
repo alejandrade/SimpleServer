@@ -11,11 +11,11 @@ import (
 
 func BasicAuth(h http.Handler, context *endpoints.AppContext) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("middleware", r.URL)
+		log.Println("Security Checkpoint", r.URL)
 		user, _, ok := r.BasicAuth()
+		//ignore password becuase this isn't real security
 		if !ok {
-			w.WriteHeader(401)
-			w.Write([]byte("Unauthorized.\n"))
+			http.Error(w, "Unauthorized", 401)
 		} else {
 			context.SetName(user)
 			h.ServeHTTP(w, r)

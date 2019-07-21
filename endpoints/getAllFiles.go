@@ -3,13 +3,24 @@ package endpoints
 import (
 	"SimpleServer/service"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 )
 
 func (app *AppContext) GetAllFiles(w http.ResponseWriter, r *http.Request) {
-	fileRecords := service.GetAllFilesDb(app.User, app.DB)
-	fmt.Println("allFiles Endpoint Hit")
+	fileRecords, err := service.GetAllFilesDb(app.User, app.DB)
+	log.Println("allFiles Endpoint Hit")
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	w.Header().Set("content-type", "application/json")
-	json.NewEncoder(w).Encode(fileRecords)
+	err = json.NewEncoder(w).Encode(fileRecords)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		log.Println("", err.Error())
+		return
+	}
+
 }
