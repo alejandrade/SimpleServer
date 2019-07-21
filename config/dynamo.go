@@ -7,18 +7,19 @@ import (
 	"log"
 )
 
+// all string values here should prob come out of a property file
 func CreateFileUploadIfNotExist() *dynamodb.DynamoDB {
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
+	//
 
 	// Create DynamoDB client
 	svc := dynamodb.New(sess, &aws.Config{
 		Region: aws.String("us-east-2")},
 	)
 
-	// Create table Movies
 	tableName := "UserFileUpload"
 
 	//I really should add an index here for User but I don't want to pay for AWS bill

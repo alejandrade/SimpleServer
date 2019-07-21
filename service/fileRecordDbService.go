@@ -8,6 +8,7 @@ import (
 	"log"
 )
 
+//This should be coming out of a property file
 var TABLE_NAME = "UserFileUpload"
 
 func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
@@ -18,7 +19,7 @@ func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
 
 	expr, err := expression.NewBuilder().WithFilter(filt).Build()
 	if err != nil {
-		log.Println("Got error building expression:")
+		log.Println("Got error building expression:", err.Error())
 		return nil, err
 	}
 
@@ -100,7 +101,7 @@ func SaveFileDb(file FileRecord, db *dynamodb.DynamoDB) error {
 		return err
 	}
 
-	log.Println("Successfully added '" + file.FileName)
+	log.Println("Successfully added '", file.FileName)
 	return nil
 
 }

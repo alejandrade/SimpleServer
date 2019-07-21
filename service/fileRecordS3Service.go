@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 )
 
+// this should be in a property file
 var BUCKET_NAME = "gigamog.simple.server.2018"
 
 func GetFileS3(record FileRecord, downloader *s3manager.Downloader) ([]byte, error) {
