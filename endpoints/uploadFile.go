@@ -48,7 +48,7 @@ func handleFile(s3 *s3manager.Uploader, r *http.Request, fileRecord *service.Fil
 	log.Println("file size:  ", fileSize)
 
 	if fileSize > FILE_SIZE_LIMIT {
-		return errors.New("Maximum file size of 5 megabytes")
+		return errors.New("Maximum file size of 5 mb")
 	}
 
 	if err != nil {
