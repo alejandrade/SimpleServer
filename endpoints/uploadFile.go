@@ -14,7 +14,7 @@ import (
 var FILE_SIZE_LIMIT int64 = 5000000
 
 func (app *AppContext) UploadFile(w http.ResponseWriter, r *http.Request) {
-	fileRecord := service.FileRecord{User: app.User}
+	fileRecord := service.FileRecord{User: GetUserFromRequest(r)}
 	err := handleFile(app.S3Uploader, r, &fileRecord)
 	if err != nil {
 		http.Error(w, err.Error(), 500)

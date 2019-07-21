@@ -8,7 +8,7 @@ import (
 )
 
 func (app *AppContext) GetAllFiles(w http.ResponseWriter, r *http.Request) {
-	fileRecords, err := service.GetAllFilesDb(app.User, app.DB)
+	fileRecords, err := service.GetAllFilesDb(GetUserFromRequest(r), app.DB)
 	log.Println("allFiles Endpoint Hit")
 
 	if err != nil {

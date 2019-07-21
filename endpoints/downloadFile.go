@@ -13,7 +13,7 @@ import (
 func (app *AppContext) DownloadFile(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	fileId := params["fileId"]
-	fileRecord, err := service.GetFileDb(fileId, app.User, app.DB)
+	fileRecord, err := service.GetFileDb(fileId, GetUserFromRequest(r), app.DB)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)

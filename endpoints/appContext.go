@@ -9,9 +9,4 @@ type AppContext struct {
 	DB           *dynamodb.DynamoDB
 	S3Uploader   *s3manager.Uploader
 	S3Downloader *s3manager.Downloader
-	User         string
-}
-
-func (f *AppContext) SetName(userName string) {
-	f.User = userName
 }

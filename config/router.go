@@ -9,15 +9,14 @@ import (
 	"net/http"
 )
 
-func BasicAuth(h http.Handler, context *endpoints.AppContext) http.Handler {
+func BasicAuth(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Security Checkpoint", r.URL)
-		user, _, ok := r.BasicAuth()
+		_, _, ok := r.BasicAuth()
 		//ignore password becuase this isn't real security
 		if !ok {
 			http.Error(w, "Unauthorized", 401)
 		} else {
-			context.SetName(user)
 			h.ServeHTTP(w, r)
 		}
 	})
@@ -29,5 +28,5 @@ func HandleRequest(dbclient *dynamodb.DynamoDB, s3ClientUploader *s3manager.Uplo
 	myRouter.HandleFunc("/file", (&context).UploadFile).Methods("POST")
 	myRouter.HandleFunc("/file", (&context).GetAllFiles).Methods("GET")
 	myRouter.HandleFunc("/file/{fileId}", (&context).DownloadFile).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8080", BasicAuth(myRouter, &context)))
+	log.Fatal(http.ListenAndServe(":8080", BasicAuth(myRouter)))
 }
