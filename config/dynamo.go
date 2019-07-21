@@ -21,6 +21,8 @@ func CreateFileUploadIfNotExist() *dynamodb.DynamoDB {
 	// Create table Movies
 	tableName := "UserFileUpload"
 
+	//I really should add an index here for User but I don't want to pay for AWS bill
+
 	input := &dynamodb.CreateTableInput{
 		AttributeDefinitions: []*dynamodb.AttributeDefinition{
 			{

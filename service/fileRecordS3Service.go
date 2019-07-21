@@ -28,7 +28,6 @@ func GetFileS3(record FileRecord, downloader *s3manager.Downloader) ([]byte, err
 	}
 
 	return buff.Bytes(), nil
-
 }
 
 func SaveFileS3(bytes *bytes.Buffer, fileHeader multipart.FileHeader, uploader *s3manager.Uploader, record *FileRecord) error {

@@ -11,6 +11,9 @@ import (
 var TABLE_NAME = "UserFileUpload"
 
 func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
+
+	// normally here we would use query and add an index to dynamodb but I opted to use scan since this isn't a production project
+
 	filt := expression.Name("User").Equal(expression.Value(user))
 
 	expr, err := expression.NewBuilder().WithFilter(filt).Build()
@@ -19,7 +22,6 @@ func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
 		return nil, err
 	}
 
-	// Build the query input parameters
 	params := &dynamodb.ScanInput{
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
@@ -28,7 +30,6 @@ func GetAllFilesDb(user string, db *dynamodb.DynamoDB) ([]FileRecord, error) {
 		TableName:                 aws.String(TABLE_NAME),
 	}
 
-	// Make the DynamoDB Query API call
 	result, err := db.Scan(params)
 	if err != nil {
 		log.Println("Query API call failed:")
