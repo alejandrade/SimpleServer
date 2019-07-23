@@ -22,9 +22,10 @@ uploaded the file can access it.`
 Set up Aws CLI with valid credentials for (read/write) for s3 bucket and (read/write/create) for DynamoDB.
 
 Dynamodb Table will be created automatically if it does not exist.
+can be renamed in properties
 
-S3 bucket should be renamed in project. 
-- `service/fileRecordS3Service.go`
+S3 bucket should be renamed in properties. 
+- `properties.json`
 
 Side note: if I had more time I would have added local dynamodb and s3 mock to this project.
 
